@@ -84,6 +84,69 @@
     <div id="card-inner"></div>
   </div>
 
+  <!-- Mobil navbar -->
+  <nav id="mob-nav">
+    <button class="nav-btn" id="nav-trip">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+      <span>Sök resa</span>
+    </button>
+    <button class="nav-btn" id="nav-search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <span>Sök</span>
+    </button>
+    <button class="nav-btn" id="nav-filter">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      <span>Filter</span>
+    </button>
+    <button class="nav-btn" id="nav-locate">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg>
+      <span>Position</span>
+    </button>
+    <button class="nav-btn" id="nav-more">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+      <span>Mer</span>
+    </button>
+  </nav>
+
+  <!-- Mobil filter-panel -->
+  <div id="mob-filter" class="hidden">
+    <div id="mob-filter-inner">
+      <div class="mf-title">Filter</div>
+      <div class="mf-section">
+        <div class="mf-label">Fordonstyp</div>
+        <div class="mf-row">
+          <button class="mf-btn on" data-type="bus"><span class="fd" style="--c:var(--teal)"></span>Buss</button>
+          <button class="mf-btn on" data-type="train"><span class="fd" style="--c:var(--green)"></span>Tåg</button>
+          <button class="mf-btn on" data-type="tram"><span class="fd" style="--c:var(--cyan)"></span>Spårvagn</button>
+        </div>
+      </div>
+      <div class="mf-section">
+        <div class="mf-label">Län</div>
+        <select id="mob-region">
+          <option value="all" selected>Alla län</option>
+          <option value="otraf">Östergötland</option>
+          <option value="orebro">Örebro</option>
+        </select>
+      </div>
+      <div class="mf-section">
+        <div class="mf-row">
+          <label class="mf-toggle"><input type="checkbox" id="mob-chk-stops" /><span>Hållplatser</span></label>
+          <label class="mf-toggle"><input type="checkbox" id="mob-chk-inactive" checked /><span>Parkerade</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobil mer-meny -->
+  <div id="mob-more" class="hidden">
+    <div id="mob-more-inner">
+      <button class="mm-btn" id="mm-theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Byt tema</button>
+      <button class="mm-btn" id="mm-alerts">Störningar <span id="mob-al-count"></span></button>
+      <button class="mm-btn" id="mm-stats">Statistik</button>
+      <button class="mm-btn" id="mm-info">Om</button>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="app.js"></script>
 </body>

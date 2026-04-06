@@ -726,6 +726,123 @@ function st(t){return t?t.substring(0,5):'';}
 function fmtDur(d){const m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);return m?`${m[1]?m[1]+'h ':''}${m[2]?m[2]+'min':''}`.trim():d;}
 function fmtTs(ts){return ts?new Date(ts*1000).toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit'}):'—';}
 
+// ── Mobil navbar ───────────────────────────────────────────────────
+function closeMobPanels() {
+  document.getElementById('mob-filter').classList.add('hidden');
+  document.getElementById('mob-more').classList.add('hidden');
+  document.getElementById('trip-bar').classList.add('hidden');
+  document.getElementById('search-bar').classList.add('hidden');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+}
+
+document.getElementById('nav-trip')?.addEventListener('click', function() {
+  const open = !document.getElementById('trip-bar').classList.contains('hidden');
+  closeMobPanels();
+  if (!open) {
+    document.getElementById('trip-bar').classList.remove('hidden');
+    this.classList.add('active');
+    document.getElementById('tf').focus();
+  }
+});
+
+document.getElementById('nav-search')?.addEventListener('click', function() {
+  const open = !document.getElementById('search-bar').classList.contains('hidden');
+  closeMobPanels();
+  if (!open) {
+    document.getElementById('search-bar').classList.remove('hidden');
+    this.classList.add('active');
+    document.getElementById('search').focus();
+  }
+});
+
+document.getElementById('nav-filter')?.addEventListener('click', function() {
+  const open = !document.getElementById('mob-filter').classList.contains('hidden');
+  closeMobPanels();
+  if (!open) {
+    document.getElementById('mob-filter').classList.remove('hidden');
+    this.classList.add('active');
+  }
+});
+
+document.getElementById('nav-locate')?.addEventListener('click', function() {
+  closeMobPanels();
+  navigator.geolocation?.getCurrentPosition(p => map.flyTo([p.coords.latitude,p.coords.longitude],15), ()=>{}, {enableHighAccuracy:true});
+});
+
+document.getElementById('nav-more')?.addEventListener('click', function() {
+  const open = !document.getElementById('mob-more').classList.contains('hidden');
+  closeMobPanels();
+  if (!open) {
+    document.getElementById('mob-more').classList.remove('hidden');
+    this.classList.add('active');
+  }
+});
+
+// Mobil filter — synka med desktop-logik
+document.querySelectorAll('.mf-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.type;
+    btn.classList.toggle('on');
+    typeFilter[type] = btn.classList.contains('on');
+    // Synka desktop-knappar
+    document.querySelector(`.fbtn[data-type="${type}"]`)?.classList.toggle('on', typeFilter[type]);
+    for (const [id, m] of vm) {
+      const v = vd.get(id);
+      if (v && !typeFilter[v.vehicleType]) { map.removeLayer(m); vm.delete(id); }
+    }
+    updateVehicles();
+  });
+});
+
+document.getElementById('mob-region')?.addEventListener('change', function() {
+  regionFilter = this.value;
+  document.getElementById('region-select').value = this.value;
+  for (const [id, m] of vm) {
+    const v = vd.get(id);
+    if (v && regionFilter !== 'all' && v.operator !== regionFilter) { map.removeLayer(m); vm.delete(id); }
+  }
+  const rv = REGION_VIEW[regionFilter] || REGION_VIEW.all;
+  map.flyTo([rv.lat, rv.lng], rv.zoom, { duration: 0.8 });
+  updateVehicles();
+});
+
+document.getElementById('mob-chk-stops')?.addEventListener('change', function() {
+  document.getElementById('chk-stops').checked = this.checked;
+  if (this.checked) { loadStops(); map.addLayer(stopL); }
+  else map.removeLayer(stopL);
+});
+
+document.getElementById('mob-chk-inactive')?.addEventListener('change', function() {
+  showInactive = this.checked;
+  document.getElementById('chk-inactive').checked = this.checked;
+  for (const [id, m] of vm) {
+    const v = vd.get(id);
+    if (!v) continue;
+    if (!v.line && !showInactive) map.removeLayer(m);
+    else if (!(followId && id !== followId)) { if (!map.hasLayer(m)) map.addLayer(m); m.setIcon(mkIcon(v)); }
+  }
+});
+
+// Mer-meny knappar
+document.getElementById('mm-theme')?.addEventListener('click', () => {
+  closeMobPanels();
+  document.getElementById('btn-theme').click();
+});
+
+document.getElementById('mm-alerts')?.addEventListener('click', () => {
+  closeMobPanels();
+  showAlerts();
+});
+
+document.getElementById('mm-info')?.addEventListener('click', () => {
+  closeMobPanels();
+  openCard(`
+    <div style="font-size:0.9rem;font-weight:800;margin-bottom:10px">Om Kollektivtrafik</div>
+    <p style="font-size:0.75rem;color:var(--sub);line-height:1.6;margin-bottom:8px">Realtidskarta för kollektivtrafiken i Östergötland och Örebro.</p>
+    <p style="font-size:0.68rem;color:var(--dim)">Data: CC BY 4.0 Trafiklab</p>
+  `);
+});
+
 // ── Init ───────────────────────────────────────────────────────────
 updateVehicles(); updateAlerts();
 setInterval(updateVehicles, 5000);

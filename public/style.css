@@ -341,33 +341,58 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+/* ── Mobil navbar (dold på desktop) ────── */
+#mob-nav, #mob-filter, #mob-more { display: none; }
+
 /* ── Mobile ──────────────────────────────── */
 @media (max-width: 768px) {
-  #hd { height: 28px; }
-  #logo { font-size: 0.75rem; letter-spacing: 0.15em; }
+  /* Dölj desktop toolbar */
+  #tb { display: none; }
+  #hd { height: 32px; }
+  #logo { font-size: 0.7rem; letter-spacing: 0.12em; }
+  #logo-icon { height: 18px; width: 18px; margin-right: 4px; }
 
-  #tb {
-    flex-wrap: wrap; height: auto; padding: 3px 6px; gap: 3px;
+  /* Bottom navbar */
+  #mob-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 800;
+    height: 56px;
+    padding: 4px 0 calc(4px + env(safe-area-inset-bottom, 0px));
+    background: rgba(13,33,55,0.95);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
   }
 
-  .tb-btn { padding: 3px 6px; font-size: 0.58rem; }
-  .tb-btn.icon { padding: 3px 5px; font-size: 0.68rem; }
-  .tb-btn.primary { padding: 3px 8px; }
-  #region-select { padding: 3px 18px 3px 6px; font-size: 0.58rem; }
-  .tb-tog { padding: 3px 5px; font-size: 0.56rem; }
-  .fbtn { padding: 2px 5px; font-size: 0.52rem; }
-  .fd { width: 5px; height: 5px; }
-  .tb-sep { height: 14px; }
-  #tb-live { font-size: 0.52rem; }
+  .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: none;
+    background: transparent;
+    color: var(--sub);
+    font-size: 0.55rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
 
-  #trip-bar, #search-bar, #follow { top: auto; }
+  .nav-btn.active { color: var(--teal); }
+  .nav-btn svg { opacity: 0.7; }
+  .nav-btn.active svg { opacity: 1; stroke: var(--teal); }
 
-  /* Dynamisk top baserad på toolbar-höjd */
-  #trip-bar { position: fixed; top: 62px; left: 8px; right: 8px; }
-  #search-bar { position: fixed; top: 62px; left: 8px; width: 240px; }
-  #follow { top: 62px; }
+  /* Panels & overlays */
+  #trip-bar { top: 40px; left: 8px; right: 8px; bottom: 64px; max-height: none; border-radius: var(--r); }
+  #search-bar { top: 40px; left: 8px; right: 8px; width: auto; }
+  #search { font-size: 0.88rem; padding: 12px 14px; }
+  #search-list { max-height: 50dvh; }
+  #follow { top: 40px; }
 
-  #card { left: 8px; right: 8px; width: auto; bottom: 8px; max-height: 45dvh; }
+  #card { left: 8px; right: 8px; width: auto; bottom: 64px; max-height: 50dvh; }
 
   /* Sidopanel overlay */
   #stops-panel {
@@ -376,16 +401,16 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
     border-radius: 0;
     background: rgba(13,33,55,0.6);
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    z-index: 900;
+    z-index: 850;
     display: flex; align-items: flex-end;
-    padding: 0;
+    padding: 0 0 56px; /* space for navbar */
   }
 
   #stops-panel:has(#sp-empty:not(.hidden)) { display: none; }
 
   #sp-content {
     width: 100%;
-    max-height: 75dvh;
+    max-height: 70dvh;
     background: var(--card);
     border-radius: 16px 16px 0 0;
     border-top: 2px solid var(--teal);
@@ -395,19 +420,92 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
   }
 
   #sp-empty { display: none; }
-}
 
-/* Liten mobil (iPhone SE etc) */
-@media (max-width: 400px) {
-  #logo { font-size: 0.6rem; letter-spacing: 0.1em; }
-  .tb-btn { padding: 2px 4px; font-size: 0.52rem; }
-  .tb-btn.primary { padding: 2px 6px; }
-  .fbtn { padding: 2px 4px; font-size: 0.48rem; }
-  #region-select { font-size: 0.52rem; }
-  .tb-tog { font-size: 0.5rem; }
-  #tb-live { font-size: 0.48rem; }
-  #search-bar { width: 200px; }
-  #search { padding: 7px 10px; font-size: 0.72rem; }
+  /* Filter panel */
+  #mob-filter, #mob-more {
+    display: none;
+    position: fixed;
+    bottom: 56px; left: 0; right: 0;
+    z-index: 810;
+    animation: up .2s cubic-bezier(.32,.72,0,1);
+  }
+
+  #mob-filter:not(.hidden), #mob-more:not(.hidden) { display: block; }
+
+  #mob-filter-inner, #mob-more-inner {
+    background: var(--card);
+    border-radius: 16px 16px 0 0;
+    border-top: 1px solid var(--border);
+    padding: 16px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  }
+
+  .mf-title { font-size: 0.85rem; font-weight: 800; margin-bottom: 14px; }
+  .mf-section { margin-bottom: 14px; }
+  .mf-label { font-size: 0.6rem; font-weight: 700; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+  .mf-row { display: flex; gap: 8px; }
+
+  .mf-btn {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--sub);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .mf-btn.on { color: var(--text); border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); }
+  .mf-btn .fd { width: 8px; height: 8px; }
+
+  #mob-region {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 600;
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='%236b8fac'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+
+  .mf-toggle {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--sub);
+    cursor: pointer;
+  }
+  .mf-toggle input { display: none; }
+  .mf-toggle:has(input:checked) { border-color: var(--teal); color: var(--teal); }
+
+  /* Mer-meny */
+  .mm-btn {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+  }
+  .mm-btn:last-child { border-bottom: none; }
+  .mm-btn:active { background: rgba(255,255,255,0.03); }
 }
 
 /* Desktop */

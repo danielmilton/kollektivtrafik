@@ -661,21 +661,33 @@ document.getElementById('chk-inactive').onchange = function() {
   }
 };
 
-// Sök resa knapp — toggle trip-bar
+// Stäng alla paneler
+function closeAllPanels() {
+  document.getElementById('trip-bar').classList.add('hidden');
+  document.getElementById('search-bar').classList.add('hidden');
+  document.getElementById('mob-filter')?.classList.add('hidden');
+  document.getElementById('mob-more')?.classList.add('hidden');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+}
+
+// Sök resa knapp
 document.getElementById('btn-trip').onclick = () => {
-  const tb = document.getElementById('trip-bar');
-  tb.classList.toggle('hidden');
-  if (!tb.classList.contains('hidden')) {
-    document.getElementById('search-bar').classList.add('hidden');
+  const open = !document.getElementById('trip-bar').classList.contains('hidden');
+  closeAllPanels();
+  if (!open) {
+    document.getElementById('trip-bar').classList.remove('hidden');
     document.getElementById('tf').focus();
   }
 };
 
-// ── Toolbar buttons ────────────────────────────────────────────────
+// Sök hållplats knapp
 document.getElementById('btn-search').onclick = () => {
-  const sb = document.getElementById('search-bar');
-  sb.classList.toggle('hidden');
-  if (!sb.classList.contains('hidden')) document.getElementById('search').focus();
+  const open = !document.getElementById('search-bar').classList.contains('hidden');
+  closeAllPanels();
+  if (!open) {
+    document.getElementById('search-bar').classList.remove('hidden');
+    document.getElementById('search').focus();
+  }
 };
 
 document.getElementById('btn-locate').onclick = () => {
@@ -738,13 +750,7 @@ function fmtDur(d){const m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);return m?`${m[1]?
 function fmtTs(ts){return ts?new Date(ts*1000).toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit'}):'—';}
 
 // ── Mobil navbar ───────────────────────────────────────────────────
-function closeMobPanels() {
-  document.getElementById('mob-filter').classList.add('hidden');
-  document.getElementById('mob-more').classList.add('hidden');
-  document.getElementById('trip-bar').classList.add('hidden');
-  document.getElementById('search-bar').classList.add('hidden');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-}
+function closeMobPanels() { closeAllPanels(); }
 
 document.getElementById('nav-trip')?.addEventListener('click', function() {
   const open = !document.getElementById('trip-bar').classList.contains('hidden');

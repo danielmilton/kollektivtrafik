@@ -1,4 +1,4 @@
-const CACHE = 'kollektivtrafik-v9';
+const CACHE = 'kollektivtrafik-v10';
 const STATIC = ['/', '/style.css', '/app.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', '/nav-trip.png', '/nav-search.png', '/nav-filter.png', '/nav-locate.png', '/nav-more.png'];
 
 self.addEventListener('install', e => {

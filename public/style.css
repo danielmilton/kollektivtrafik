@@ -117,39 +117,36 @@ body {
 #live-dot.on { background: var(--green); box-shadow: 0 0 6px rgba(74,222,128,0.4); }
 #v-count { font-weight: 700; color: var(--text); }
 
-/* ── Trip bar ────────────────────────────── */
-#trip-bar {
-  position: fixed; top: 94px; left: 10px; right: 10px; z-index: 700;
+/* ── Paneler (trip, search) — desktop ────── */
+#trip-bar, #search-bar {
+  position: fixed; top: 94px; left: 10px; z-index: 700;
   background: rgba(17,42,69,0.95);
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border);
   border-radius: var(--r);
-  padding: 10px;
+  padding: 12px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.4);
   animation: fadeIn .15s ease;
   max-height: 70dvh; overflow-y: auto;
 }
+
+#trip-bar { width: 340px; }
+#search-bar { width: 300px; }
 
 #trip-bar .tp-f { margin-bottom: 6px; }
 #trip-bar .tp-fl { margin-bottom: 6px; }
 #trip-bar .tp-go { margin-bottom: 6px; }
 #trip-results { max-height: 40dvh; overflow-y: auto; scrollbar-width: none; }
 
-@media (min-width: 769px) {
-  #trip-bar { left: 10px; right: auto; width: 340px; }
-}
-
-/* ── Search ──────────────────────────────── */
-#search-bar { position: fixed; top: 94px; left: 10px; z-index: 700; width: 280px; }
 #search {
-  width: 100%; padding: 8px 12px; border-radius: var(--r); font-size: 0.78rem;
-  border: 1px solid var(--border); background: rgba(13,33,55,0.95);
-  backdrop-filter: blur(14px); color: var(--text); font-size: 0.82rem; outline: none;
+  width: 100%; padding: 10px 14px; border-radius: var(--r);
+  border: 1px solid var(--border); background: var(--card2);
+  color: var(--text); font-size: 0.85rem; outline: none;
 }
 #search::placeholder { color: var(--dim); }
 #search:focus { border-color: var(--teal); }
-#search-list { margin-top: 4px; border-radius: var(--r); background: rgba(13,33,55,0.97); border: 1px solid var(--border); overflow: hidden; max-height: 200px; overflow-y: auto; }
-.s-item { padding: 10px 14px; font-size: 0.78rem; cursor: pointer; border-bottom: 1px solid var(--border); }
+#search-list { margin-top: 6px; border-radius: var(--r); background: var(--card2); border: 1px solid var(--border); overflow: hidden; max-height: 250px; overflow-y: auto; }
+.s-item { padding: 12px 14px; font-size: 0.82rem; cursor: pointer; border-bottom: 1px solid var(--border); }
 .s-item:last-child { border-bottom: none; }
 .s-item:active { background: rgba(255,255,255,0.03); }
 
@@ -434,12 +431,25 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
   .nav-icon { width: 22px; height: 22px; opacity: 0.8; }
   .nav-btn.active .nav-icon { opacity: 1; filter: brightness(1.5) saturate(1.5); }
 
-  /* Panels & overlays */
-  #trip-bar { top: 40px; left: 8px; right: 8px; bottom: 76px; max-height: none; border-radius: var(--r); }
-  #search-bar { top: 40px; left: 8px; right: 8px; width: auto; }
+  /* Alla paneler som bottom-sheets på mobil */
+  #trip-bar, #search-bar, #mob-filter, #mob-more {
+    position: fixed;
+    top: auto !important; left: 0 !important; right: 0 !important;
+    bottom: 56px; /* ovanför navbar */
+    width: 100% !important;
+    max-height: 70dvh;
+    border-radius: 16px 16px 0 0;
+    border: none;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+    animation: up .2s cubic-bezier(.32,.72,0,1);
+    padding: 16px;
+  }
+
   #search { font-size: 0.88rem; padding: 12px 14px; }
-  #search-list { max-height: 50dvh; }
-  #follow { top: 40px; }
+  #search-list { max-height: 40dvh; }
+  #trip-results { max-height: 45dvh; }
+  #follow { top: 48px; }
 
   #card { left: 8px; right: 8px; width: auto; bottom: 76px; max-height: 50dvh; }
 

@@ -1,5 +1,5 @@
-const CACHE = 'kollektivtrafik-v6';
-const STATIC = ['/', '/style.css', '/app.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png'];
+const CACHE = 'kollektivtrafik-v7';
+const STATIC = ['/', '/style.css', '/app.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', '/nav-trip.png', '/nav-search.png', '/nav-filter.png', '/nav-locate.png', '/nav-more.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC)));

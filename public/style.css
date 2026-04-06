@@ -423,8 +423,8 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
   }
 
   .nav-btn.active { color: var(--teal); }
-  .nav-btn svg { opacity: 1; stroke: var(--sub); width: 22px; height: 22px; }
-  .nav-btn.active svg { stroke: var(--teal); }
+  .nav-icon { width: 22px; height: 22px; opacity: 0.8; }
+  .nav-btn.active .nav-icon { opacity: 1; filter: brightness(1.5) saturate(1.5); }
 
   /* Panels & overlays */
   #trip-bar { top: 40px; left: 8px; right: 8px; bottom: 64px; max-height: none; border-radius: var(--r); }

@@ -851,6 +851,31 @@ document.getElementById('mm-alerts')?.addEventListener('click', () => {
   showAlerts();
 });
 
+document.getElementById('mm-stats')?.addEventListener('click', async () => {
+  closeMobPanels();
+  openCard('<div class="stats-h">Besökare senaste 14 dagarna</div><div class="spinner"></div>');
+  try {
+    const data = await (await fetch('/api/stats')).json();
+    const maxCount = Math.max(...data.days.map(d => d.count), 1);
+    const barsHtml = data.days.map((d, i) => {
+      const h = Math.round((d.count / maxCount) * 90);
+      const isToday = i === data.days.length - 1;
+      return `<div class="stats-bar"><div class="stats-bar-fill" style="height:${Math.max(h, 2)}px;${isToday ? 'opacity:0.4' : ''}">${d.count > 0 ? `<span class="stats-bar-count">${d.count}</span>` : ''}</div><div class="stats-bar-line"></div><span class="stats-bar-label">${d.date}</span></div>`;
+    }).join('');
+    openCard(`
+      <div class="stats-h">Besökare senaste 14 dagarna</div>
+      <div class="stats-chart">${barsHtml}</div>
+      <div class="stats-summary">
+        <div class="stats-item"><span class="stats-val">${data.today}</span><span class="stats-label">Idag</span></div>
+        <div class="stats-item"><span class="stats-val">${data.total}</span><span class="stats-label">Totalt</span></div>
+        <div class="stats-item"><span class="stats-val">${data.active}</span><span class="stats-label">Online</span></div>
+      </div>
+    `);
+  } catch {
+    openCard('<div class="stats-h">Statistik</div><p class="empty">Kunde inte hämta</p>');
+  }
+});
+
 function showAbout() {
   openCard(`
     <div class="about">

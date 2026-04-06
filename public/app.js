@@ -68,7 +68,22 @@ map.on('zoomend', () => {
     const v = vd.get(id);
     if (v) m.setIcon(mkIcon(v));
   }
+  updateVisibleCount();
 });
+
+map.on('moveend', updateVisibleCount);
+
+function updateVisibleCount() {
+  const bounds = map.getBounds();
+  let n = 0;
+  for (const [id, v] of vd) {
+    if (!v.line) continue; // Bara aktiva med linje
+    if (!typeFilter[v.vehicleType]) continue;
+    if (regionFilter !== 'all' && v.operator !== regionFilter) continue;
+    if (bounds.contains([v.lat, v.lng])) n++;
+  }
+  document.getElementById('v-count').textContent = n;
+}
 
 // ── Smooth Interpolation ───────────────────────────────────────────
 // Varje fordon har:
@@ -141,6 +156,7 @@ async function updateVehicles() {
     data.vehicles.forEach(v => {
       if (!typeFilter[v.vehicleType]) return;
       if (regionFilter !== 'all' && v.operator !== regionFilter) return;
+      if (!v.line && !showInactive) return;
       active.add(v.id); n++;
       vd.set(v.id, v);
 
@@ -188,7 +204,7 @@ async function updateVehicles() {
       if (!active.has(id)) { map.removeLayer(m); vm.delete(id); vd.delete(id); vInterp.delete(id); }
     }
 
-    document.getElementById('v-count').textContent = n;
+    updateVisibleCount();
     document.getElementById('live-dot').className = 'on';
   } catch {
     document.getElementById('live-dot').className = '';
@@ -612,6 +628,22 @@ document.getElementById('region-select').onchange = function() {
 document.getElementById('chk-stops').onchange = function() {
   if (this.checked) { loadStops(); map.addLayer(stopL); }
   else map.removeLayer(stopL);
+};
+
+// Visa/dölj inaktiva fordon
+let showInactive = true;
+document.getElementById('chk-inactive').onchange = function() {
+  showInactive = this.checked;
+  for (const [id, m] of vm) {
+    const v = vd.get(id);
+    if (!v) continue;
+    if (!v.line && !showInactive) {
+      map.removeLayer(m);
+    } else if (!(followId && id !== followId)) {
+      if (!map.hasLayer(m)) map.addLayer(m);
+      m.setIcon(mkIcon(v));
+    }
+  }
 };
 
 // Sök resa knapp — toggle trip-bar

@@ -7,8 +7,8 @@
   --card2: #163050;
   --border: rgba(255,255,255,0.07);
   --text: #e2f0f9;
-  --sub: #6b8fac;
-  --dim: #345068;
+  --sub: #8ba8c4;
+  --dim: #4a6a84;
   --teal: #2dd4bf;
   --green: #4ade80;
   --cyan: #22d3ee;
@@ -348,18 +348,18 @@ body {
 .about-footer { font-size: 0.58rem; color: var(--dim); margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--border); }
 
 /* Stats */
-.stats-h { font-size: 0.88rem; font-weight: 800; margin-bottom: 12px; }
-.stats-chart { display: flex; align-items: flex-end; gap: 3px; height: 90px; margin-bottom: 8px; }
+.stats-h { font-size: 0.88rem; font-weight: 800; margin-bottom: 12px; margin-right: 30px; }
+.stats-chart { display: flex; align-items: flex-end; gap: 3px; height: 90px; margin-bottom: 10px; padding-top: 14px; }
 .stats-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
 .stats-bar-fill { width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; background: var(--teal); position: relative; }
 .stats-bar:last-child .stats-bar-fill { opacity: 0.4; }
-.stats-bar-count { font-size: 0.45rem; font-weight: 800; color: var(--sub); position: absolute; top: -11px; left: 50%; transform: translateX(-50%); }
-.stats-bar-label { font-size: 0.42rem; color: var(--dim); }
+.stats-bar-count { font-size: 0.55rem; font-weight: 800; color: var(--text); position: absolute; top: -14px; left: 50%; transform: translateX(-50%); }
+.stats-bar-label { font-size: 0.55rem; color: var(--sub); }
 .stats-bar-line { width: 100%; height: 2px; background: var(--teal); opacity: 0.3; border-radius: 1px; }
-.stats-summary { display: flex; gap: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
+.stats-summary { display: flex; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
 .stats-item { text-align: center; flex: 1; }
-.stats-val { font-size: 0.9rem; font-weight: 800; display: block; color: var(--teal); }
-.stats-label { font-size: 0.48rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.stats-val { font-size: 1rem; font-weight: 800; display: block; color: var(--text); }
+.stats-label { font-size: 0.58rem; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; }
 
 /* ── Vehicle dots ────────────────────────── */
 .vdot { border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.3); cursor: pointer; border: 1.5px solid rgba(255,255,255,0.1); }

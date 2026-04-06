@@ -14,7 +14,7 @@
   <!-- ═══ TOOLBAR ═══ -->
   <div id="toolbar">
     <div id="tb-row1">
-      <span id="logo">livemap</span>
+      <span id="logo">KOLLEKTIVTRAFIK</span>
       <span id="tb-live"><span id="live-dot"></span><span id="v-count">—</span></span>
       <div id="tb-filters">
         <button class="fbtn on" data-type="bus" title="Visa/dölj bussar"><span class="fd" style="--c:var(--teal)"></span>Buss</button>
@@ -36,7 +36,25 @@
     </div>
   </div>
 
-  <!-- Sök -->
+  <!-- Sök resa (under toolbar) -->
+  <div id="trip-bar" class="hidden">
+    <div id="trip-bar-inner">
+      <div class="tp-f">
+        <input type="text" id="tf" placeholder="Från" />
+        <button class="tp-sw" id="ts">⇅</button>
+        <input type="text" id="tt" placeholder="Till" />
+      </div>
+      <div class="tp-fl">
+        <label class="tp-c"><input type="radio" name="pf" value="all" checked>Alla</label>
+        <label class="tp-c"><input type="radio" name="pf" value="train">Tåg</label>
+        <label class="tp-c"><input type="radio" name="pf" value="bus">Buss</label>
+      </div>
+      <button class="tp-go" id="tgo">Sök</button>
+    </div>
+    <div id="trip-results"></div>
+  </div>
+
+  <!-- Sök hållplats -->
   <div id="search-bar" class="hidden">
     <input type="text" id="search" placeholder="Sök hållplats..." autocomplete="off" />
     <div id="search-list" class="hidden"></div>

@@ -171,8 +171,10 @@ async function updateVehicles() {
       if (!icon) return;
 
       if (vm.has(v.id)) {
-        vm.get(v.id).setIcon(icon);
-        // Position sätts av interpTick, inte här
+        const m = vm.get(v.id);
+        m.setIcon(icon);
+        // Säkerställ att följt fordon alltid syns
+        if (followId === v.id && !map.hasLayer(m)) m.addTo(map);
       } else {
         const m = L.marker([v.lat, v.lng], { icon })
           .on('click', () => selectVehicle(v.id));
@@ -294,21 +296,27 @@ async function selectVehicle(id) {
       ${stopsHtml}
     `;
 
-    document.getElementById('sp-x').onclick = clearStopsPanel;
-    document.getElementById('b-f').onclick = () => toggleFollow(id);
-    let routeVisible = !!followId; // Auto-visad om vi följer
+    document.getElementById('sp-x').onclick = () => { clearStopsPanel(); if (followId) stopFollow(); };
+    document.getElementById('b-f').onclick = () => toggleFollow(id, trip);
+
+    // Rutt toggle — helt fristående från follow
     document.getElementById('b-r').onclick = function() {
-      routeVisible = !routeVisible;
-      if (routeVisible) {
-        drawRoute(v, trip);
-        this.textContent = 'Dölj rutt';
-      } else {
+      if (routeL.getLayers().length > 0) {
+        // Rutt visas → dölj den
         routeL.clearLayers();
         this.textContent = 'Visa rutt';
+      } else {
+        // Rutt gömd → visa den
+        drawRoute(v, trip);
+        this.textContent = 'Dölj rutt';
       }
+      // ALLTID: säkerställ fordonspricken
+      ensureVehicleVisible(id);
     };
-    // Uppdatera knapptext om rutt redan visas
-    if (routeVisible) document.getElementById('b-r').textContent = 'Dölj rutt';
+    // Om follow är aktivt, visa rutt automatiskt
+    if (followId === id && routeL.getLayers().length > 0) {
+      document.getElementById('b-r').textContent = 'Dölj rutt';
+    }
 
     // Scrolla till nästa
     setTimeout(() => {
@@ -329,17 +337,25 @@ function clearStopsPanel() {
   routeL.clearLayers();
 }
 
-// ── Follow (isoleringsläge) ────────────────────────────────────────
-async function toggleFollow(id) {
+// ── Hjälpfunktion: garantera att ett fordon syns ──────────────────
+function ensureVehicleVisible(id) {
+  const m = vm.get(id);
+  if (m && !map.hasLayer(m)) map.addLayer(m);
+}
+
+// ── Follow ─────────────────────────────────────────────────────────
+function toggleFollow(id, trip) {
   if (followId === id) { stopFollow(); return; }
+
+  // Starta follow
   followId = id;
+  map._followPaused = false;
   const v = vd.get(id);
 
+  // UI
   document.getElementById('follow').classList.remove('hidden');
-  const spTitle = document.querySelector('.sp-title');
-  const lineText = v?.line ? `Linje ${v.line}` : (spTitle?.textContent || 'Fordon');
+  const lineText = v?.line ? `Linje ${v.line}` : (document.querySelector('.sp-title')?.textContent || 'Fordon');
   document.getElementById('follow-text').textContent = lineText;
-
   const b = document.getElementById('b-f');
   if (b) { b.textContent = 'Följer'; b.classList.add('on'); }
 
@@ -347,58 +363,45 @@ async function toggleFollow(id) {
   map.removeLayer(stopL);
   document.getElementById('chk-stops').checked = false;
 
-  // Dölj alla andra fordon, behåll det följda
-  hideNonFollowed();
-  const followMarker = vm.get(id);
-  if (followMarker && !map.hasLayer(followMarker)) map.addLayer(followMarker);
+  // 1. Dölj alla andra fordon
+  for (const [vid, m] of vm) {
+    if (vid !== id) map.removeLayer(m);
+  }
 
-  // Rita rutt + hållplatser för denna linje, zooma till rutten
-  try {
-    const trip = window._lastTrip || (v?.tripId ? await fetch(`/api/trip/${v.tripId}`).then(r => r.json()) : null);
-    if (trip) {
-      window._lastTrip = trip;
-      drawRoute(v, trip);
+  // 2. Visa det följda fordonet
+  ensureVehicleVisible(id);
 
-    // Säkerställ att det följda fordonet visas ovanpå allt
-    const fm = vm.get(followId);
-    if (fm && !map.hasLayer(fm)) map.addLayer(fm);
+  // 3. Rita rutt + zooma
+  if (trip) {
+    drawRoute(v, trip);
+    ensureVehicleVisible(id); // Igen efter drawRoute
 
-      // Zooma till hela rutten
-      const bounds = L.latLngBounds();
-      if (trip.shape?.length) {
-        trip.shape.forEach(p => bounds.extend(p));
-      } else {
-        trip.stops.filter(s => s.lat && s.lng).forEach(s => bounds.extend([s.lat, s.lng]));
-      }
-      if (bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14, duration: 0.6 });
-      }
-    }
-  } catch {}
+    const bounds = L.latLngBounds();
+    if (trip.shape?.length) trip.shape.forEach(p => bounds.extend(p));
+    else trip.stops.filter(s => s.lat && s.lng).forEach(s => bounds.extend([s.lat, s.lng]));
+    if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14, duration: 0.6 });
+
+    // Uppdatera rutt-knapp
+    const br = document.getElementById('b-r');
+    if (br) br.textContent = 'Dölj rutt';
+  }
 }
 
 function stopFollow() {
+  const wasFollowing = followId;
   followId = null;
+
+  // UI
   document.getElementById('follow').classList.add('hidden');
   const b = document.getElementById('b-f');
   if (b) { b.textContent = 'Följ'; b.classList.remove('on'); }
 
-  // Visa alla fordon igen
-  showAllVehicles();
+  // Rensa rutt
   routeL.clearLayers();
-}
+  const br = document.getElementById('b-r');
+  if (br) br.textContent = 'Visa rutt';
 
-function hideNonFollowed() {
-  for (const [id, m] of vm) {
-    if (id === followId) {
-      if (!map.hasLayer(m)) map.addLayer(m);
-    } else {
-      map.removeLayer(m);
-    }
-  }
-}
-
-function showAllVehicles() {
+  // Visa alla fordon
   for (const [id, m] of vm) {
     if (!map.hasLayer(m)) map.addLayer(m);
     const v = vd.get(id);
@@ -407,17 +410,16 @@ function showAllVehicles() {
 }
 
 function refreshIcons() {
-  if (followId) {
-    hideNonFollowed();
-    // Alltid visa det följda fordonet
-    const fm = vm.get(followId);
-    if (fm) {
-      if (!map.hasLayer(fm)) map.addLayer(fm);
-      const fv = vd.get(followId);
-      if (fv) fm.setIcon(mkIcon(fv));
+  for (const [id, m] of vm) {
+    const v = vd.get(id);
+    if (!v) continue;
+    m.setIcon(mkIcon(v));
+
+    if (followId) {
+      // I follow-läge: bara visa det följda
+      if (id === followId) ensureVehicleVisible(id);
+      else map.removeLayer(m);
     }
-  } else {
-    for (const [id] of vm) { const v = vd.get(id); if (v) vm.get(id).setIcon(mkIcon(v)); }
   }
 }
 
@@ -502,7 +504,7 @@ async function showDep(stop) {
     const deps = data.Departure || [];
     let h = `<div class="dep-h">📍 ${esc(stop.name)}</div>`;
     if (!deps.length) h += '<p class="empty">Inga avgångar 🌙</p>';
-    else h += deps.slice(0,12).map(d => {
+    else h += deps.slice(0,6).map(d => {
       const p = d.ProductAtStop || d.Product?.[0] || {};
       const cat = (p.catOutL||'').toLowerCase();
       const col = cat.includes('tåg') ? '#4ade80' : cat.includes('spårv') ? '#22d3ee' : '#2dd4bf';
@@ -525,20 +527,15 @@ map.on('click', async e => {
 // ── Trip ───────────────────────────────────────────────────────────
 const PROD = { all:'', train:'31', bus:'288' };
 
-function showTrip() {
-  openCard(`<div class="tp-h">🗺️ Sök resa</div>
-    <div class="tp-f"><input id="tf" placeholder="Från" /><button class="tp-sw" id="ts">⇅</button><input id="tt" placeholder="Till" /></div>
-    <div class="tp-fl"><label class="tp-c"><input type="radio" name="pf" value="all" checked>Alla</label><label class="tp-c"><input type="radio" name="pf" value="train">🚆 Tåg</label><label class="tp-c"><input type="radio" name="pf" value="bus">🚌 Buss</label></div>
-    <button class="tp-go" id="tgo">Sök</button><div id="tres"></div>`);
-  document.getElementById('tgo').onclick = doTrip;
-  document.getElementById('tt').onkeydown = e => { if (e.key === 'Enter') doTrip(); };
-  document.getElementById('ts').onclick = () => { const a=document.getElementById('tf'),b=document.getElementById('tt'); [a.value,b.value]=[b.value,a.value]; };
-}
+// Trip-bar bindings (elementen finns i HTML)
+document.getElementById('tgo').onclick = doTrip;
+document.getElementById('tt').onkeydown = e => { if (e.key === 'Enter') doTrip(); };
+document.getElementById('ts').onclick = () => { const a=document.getElementById('tf'),b=document.getElementById('tt'); [a.value,b.value]=[b.value,a.value]; };
 
 async function doTrip() {
   const from=document.getElementById('tf').value.trim(), to=document.getElementById('tt').value.trim();
   const filt=document.querySelector('input[name="pf"]:checked')?.value||'all';
-  const el=document.getElementById('tres');
+  const el=document.getElementById('trip-results');
   if (!from||!to) { el.innerHTML='<p class="empty">Fyll i från och till</p>'; return; }
   el.innerHTML='<div class="spinner"></div>';
   try {
@@ -617,8 +614,15 @@ document.getElementById('chk-stops').onchange = function() {
   else map.removeLayer(stopL);
 };
 
-// Sök resa knapp
-document.getElementById('btn-trip').onclick = () => showTrip();
+// Sök resa knapp — toggle trip-bar
+document.getElementById('btn-trip').onclick = () => {
+  const tb = document.getElementById('trip-bar');
+  tb.classList.toggle('hidden');
+  if (!tb.classList.contains('hidden')) {
+    document.getElementById('search-bar').classList.add('hidden');
+    document.getElementById('tf').focus();
+  }
+};
 
 // ── Toolbar buttons ────────────────────────────────────────────────
 document.getElementById('btn-search').onclick = () => {

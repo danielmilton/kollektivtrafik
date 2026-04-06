@@ -353,6 +353,15 @@ function clearStopsPanel() {
   routeL.clearLayers();
 }
 
+// Mobil: klicka på overlay-bakgrunden döljer panelen (follow + rutt behålls)
+document.getElementById('stops-panel').addEventListener('click', (e) => {
+  if (e.target.id === 'stops-panel') {
+    // Dölj panelen visuellt utan att rensa data eller stoppa follow
+    document.getElementById('sp-empty').classList.remove('hidden');
+    document.getElementById('sp-content').classList.add('hidden');
+  }
+});
+
 // ── Hjälpfunktion: garantera att ett fordon syns ──────────────────
 function ensureVehicleVisible(id) {
   const m = vm.get(id);
@@ -511,15 +520,15 @@ function showAlerts() {
 
 // ── Departures ─────────────────────────────────────────────────────
 async function showDep(stop) {
-  openCard(`<div class="dep-h">📍 ${esc(stop.name)}</div><div class="spinner"></div>`);
+  openCard(`<div class="dep-h">${esc(stop.name)}</div><div class="spinner"></div>`);
   try {
     const sr = await (await fetch(`/api/resrobot/stops?q=${encodeURIComponent(stop.name)}`)).json();
     const rs = sr.stopLocationOrCoordLocation?.[0]?.StopLocation;
-    if (!rs) { openCard(`<div class="dep-h">📍 ${esc(stop.name)}</div><p class="empty">Hittades inte</p>`); return; }
+    if (!rs) { openCard(`<div class="dep-h">${esc(stop.name)}</div><p class="empty">Hittades inte</p>`); return; }
     const data = await (await fetch(`/api/resrobot/departures?id=${rs.extId}`)).json();
     const deps = data.Departure || [];
-    let h = `<div class="dep-h">📍 ${esc(stop.name)}</div>`;
-    if (!deps.length) h += '<p class="empty">Inga avgångar 🌙</p>';
+    let h = `<div class="dep-h">${esc(stop.name)}</div><div class="dep-sub">Nästa avgångar</div>`;
+    if (!deps.length) h += '<p class="empty">Inga avgångar just nu</p>';
     else h += deps.slice(0,6).map(d => {
       const p = d.ProductAtStop || d.Product?.[0] || {};
       const cat = (p.catOutL||'').toLowerCase();
@@ -529,7 +538,7 @@ async function showDep(stop) {
       return `<div class="dr"><span class="dr-l" style="background:${col}">${p.displayNumber||'?'}</span><span class="dr-d">${d.direction||'—'}</span><span class="dr-t">${time}${rt&&rt!==time?`<span class="dr-late"> ${rt}</span>`:''}</span></div>`;
     }).join('');
     openCard(h);
-  } catch { openCard(`<div class="dep-h">📍 ${esc(stop.name)}</div><p class="empty">Fel</p>`); }
+  } catch { openCard(`<div class="dep-h">${esc(stop.name)}</div><p class="empty">Fel</p>`); }
 }
 
 map.on('click', async e => {

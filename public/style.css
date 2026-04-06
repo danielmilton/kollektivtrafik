@@ -409,6 +409,9 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
       height: calc(78px + env(safe-area-inset-bottom, 0px));
       padding: 10px 0 calc(12px + env(safe-area-inset-bottom, 0px));
     }
+    #trip-bar, #search-bar, #mob-filter, #mob-more {
+      bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+    }
   }
 
   .nav-btn {
@@ -433,17 +436,18 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
 
   /* Alla paneler som bottom-sheets på mobil */
   #trip-bar, #search-bar, #mob-filter, #mob-more {
-    position: fixed;
+    position: fixed !important;
     top: auto !important; left: 0 !important; right: 0 !important;
-    bottom: 56px; /* ovanför navbar */
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
     width: 100% !important;
-    max-height: 70dvh;
+    max-height: 65dvh;
     border-radius: 16px 16px 0 0;
     border: none;
     border-top: 1px solid var(--border);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
     animation: up .2s cubic-bezier(.32,.72,0,1);
     padding: 16px;
+    z-index: 810 !important;
   }
 
   #search { font-size: 0.88rem; padding: 12px 14px; }
@@ -480,21 +484,13 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
 
   #sp-empty { display: none; }
 
-  /* Filter panel */
-  #mob-filter, #mob-more {
-    display: none;
-    position: fixed;
-    bottom: 56px; left: 0; right: 0;
-    z-index: 810;
-    animation: up .2s cubic-bezier(.32,.72,0,1);
-  }
-
+  /* Filter/mer panel visibility */
   #mob-filter:not(.hidden), #mob-more:not(.hidden) { display: block; }
 
   #mob-filter-inner, #mob-more-inner {
-    background: var(--card);
-    border-radius: 16px 16px 0 0;
-    border-top: 1px solid var(--border);
+    background: transparent;
+    border-radius: 0;
+    border-top: none;
     padding: 16px;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
   }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0d2137">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Livemap</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ═══ TOOLBAR ═══ -->
+  <div id="toolbar">
+    <div id="tb-row1">
+      <span id="logo">livemap</span>
+      <span id="tb-live"><span id="live-dot"></span><span id="v-count">—</span></span>
+      <div id="tb-filters">
+        <button class="fbtn on" data-type="bus" title="Visa/dölj bussar"><span class="fd" style="--c:var(--teal)"></span>Buss</button>
+        <button class="fbtn on" data-type="train" title="Visa/dölj tåg"><span class="fd" style="--c:var(--green)"></span>Tåg</button>
+        <button class="fbtn on" data-type="tram" title="Visa/dölj spårvagnar"><span class="fd" style="--c:var(--cyan)"></span>Spårvagn</button>
+      </div>
+    </div>
+    <div id="tb-row2">
+      <button class="tb-btn primary" id="btn-trip" title="Sök resa mellan hållplatser">Sök resa</button>
+      <select id="region-select" title="Filtrera på län">
+        <option value="all" selected>Alla län</option>
+        <option value="otraf">Östergötland</option>
+        <option value="orebro">Örebro</option>
+      </select>
+      <label class="tb-tog" title="Visa/dölj hållplatser på kartan"><input type="checkbox" id="chk-stops" /><span>Hållplatser</span></label>
+      <button class="tb-btn" id="btn-search" title="Sök hållplats">Sök</button>
+      <button class="tb-btn" id="btn-locate" title="Centrera på min position">⌖</button>
+      <button class="tb-btn theme" id="btn-theme" title="Byt ljust/mörkt tema">☀︎</button>
+    </div>
+  </div>
+
+  <!-- Sök -->
+  <div id="search-bar" class="hidden">
+    <input type="text" id="search" placeholder="Sök hållplats..." autocomplete="off" />
+    <div id="search-list" class="hidden"></div>
+  </div>
+
+  <!-- Följ -->
+  <div id="follow" class="hidden">
+    <span id="follow-text"></span>
+    <button id="follow-end">✕</button>
+  </div>
+
+  <!-- Karta -->
+  <div id="map"></div>
+
+  <!-- ═══ SIDOPANEL: Hållplatser (alltid synlig på desktop, bottom på mobil) ═══ -->
+  <div id="stops-panel">
+    <div id="sp-empty">
+      <div id="sp-placeholder">Klicka på ett fordon för att se hållplatser</div>
+    </div>
+    <div id="sp-content" class="hidden"></div>
+  </div>
+
+  <!-- Kort (för resor, störningar, avgångar etc) -->
+  <div id="card" class="hidden">
+    <div id="card-inner"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

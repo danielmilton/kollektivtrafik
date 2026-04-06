@@ -399,11 +399,19 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
     position: fixed;
     bottom: 0; left: 0; right: 0;
     z-index: 800;
-    height: 68px;
+    height: calc(68px + env(safe-area-inset-bottom, 0px));
     padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
     background: rgba(13,33,55,0.95);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-top: 1px solid var(--border);
+  }
+
+  /* Extra höjd i PWA standalone-läge */
+  @media (display-mode: standalone) {
+    #mob-nav {
+      height: calc(78px + env(safe-area-inset-bottom, 0px));
+      padding: 10px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+    }
   }
 
   .nav-btn {

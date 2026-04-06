@@ -30,8 +30,8 @@
     <label class="tb-tog" title="Visa/dölj hållplatser"><input type="checkbox" id="chk-stops" /><span>Hållplatser</span></label>
     <label class="tb-tog" title="Visa/dölj fordon som inte är i trafik"><input type="checkbox" id="chk-inactive" checked /><span>Parkerade</span></label>
     <button class="tb-btn" id="btn-search" title="Sök hållplats">Sök hållplats</button>
-    <button class="tb-btn icon" id="btn-locate" title="Min position">⌖</button>
-    <button class="tb-btn icon" id="btn-theme" title="Byt tema">☀︎</button>
+    <button class="tb-btn icon" id="btn-locate" title="Min position"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg></button>
+    <button class="tb-btn icon" id="btn-theme" title="Byt tema"><svg id="theme-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
     <div class="tb-sep"></div>
     <button class="fbtn on" data-type="bus" title="Visa/dölj bussar"><span class="fd" style="--c:var(--teal)"></span>Buss</button>
     <button class="fbtn on" data-type="train" title="Visa/dölj tåg"><span class="fd" style="--c:var(--green)"></span>Tåg</button>
@@ -44,7 +44,7 @@
   <div id="trip-bar" class="hidden">
     <div class="tp-f">
       <input type="text" id="tf" placeholder="Från" />
-      <button class="tp-sw" id="ts">⇅</button>
+      <button class="tp-sw" id="ts"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 4v16m0 0l-4-4m4 4l4-4M17 20V4m0 0l4 4m-4-4l-4 4"/></svg></button>
       <input type="text" id="tt" placeholder="Till" />
     </div>
     <div class="tp-fl">
@@ -65,7 +65,7 @@
   <!-- Följ -->
   <div id="follow" class="hidden">
     <span id="follow-text"></span>
-    <button id="follow-end">✕</button>
+    <button id="follow-end"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   </div>
 
   <!-- Karta -->

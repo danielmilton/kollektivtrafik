@@ -41,7 +41,7 @@ const cardEl = document.getElementById('card');
 const cardIn = document.getElementById('card-inner');
 
 function openCard(html) {
-  cardIn.innerHTML = `<div class="card-bar"></div><button class="card-x" onclick="closeCard()">✕</button>${html}`;
+  cardIn.innerHTML = `<div class="card-bar"></div><button class="card-x" onclick="closeCard()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></button>${html}`;
   cardEl.classList.remove('hidden');
   cardEl.scrollTop = 0;
 }
@@ -249,7 +249,7 @@ async function selectVehicle(id) {
       <div class="sp-dot" style="background:${c}"></div>
       <span class="sp-title">${l} · Linje ${v.line || '?'}</span>
       <span class="sp-speed" id="s-speed">${speed}</span>
-      <button class="sp-close" id="sp-x">✕</button>
+      <button class="sp-close" id="sp-x"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     </div>
     <div class="spinner"></div>
   `;
@@ -302,7 +302,7 @@ async function selectVehicle(id) {
         <div class="sp-dot" style="background:${c}"></div>
         <span class="sp-title">${l} · Linje ${v.line || '?'}</span>
         <span class="sp-speed" id="s-speed">${speed}</span>
-        <button class="sp-close" id="sp-x">✕</button>
+        <button class="sp-close" id="sp-x"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
       ${nextHtml}
       <div class="sp-btns">
@@ -513,8 +513,8 @@ async function updateAlerts() {
 // alerts count uppdateras i updateAlerts
 
 function showAlerts() {
-  if (!alerts.length) { openCard('<div class="al-h">⚠️ Störningar</div><p class="empty">Inga störningar ✨</p>'); return; }
-  openCard('<div class="al-h">⚠️ Störningar (' + alerts.length + ')</div>' +
+  if (!alerts.length) { openCard('<div class="al-h">Störningar</div><p class="empty">Inga aktiva störningar</p>'); return; }
+  openCard('<div class="al-h">Störningar (' + alerts.length + ')</div>' +
     alerts.map(a => `<div class="al ${a.effect>=3?'sev':''}"><div class="al-t">${esc(a.header)}</div><div class="al-d">${esc(a.description).substring(0,140)}${a.description.length>140?'...':''}</div></div>`).join(''));
 }
 
@@ -589,13 +589,13 @@ async function doTrip() {
 }
 
 function ld(p) {
-  if (!p) return{emoji:'🚌',color:'#3b82f6',displayName:'?'};
+  if (!p) return{emoji:'',color:'#2dd4bf',displayName:'?'};
   const cat=(p.catOutL||'').toLowerCase(), num=p.displayNumber||'', op=p.operator||'';
-  let emoji='🚌',color='#2dd4bf';
-  if(cat.includes('tåg')||[1,2,4].includes(+p.catCode)){emoji='🚆';color='#4ade80';}
-  else if(cat.includes('spårv')||+p.catCode===8){emoji='🚊';color='#22d3ee';}
-  const far=cat.includes('express')||cat.includes('fjärr')||(emoji==='🚌'&&num.length>=4);
-  return{emoji,color,displayName:far&&op?op.replace(/^Vy\s+/i,''):num};
+  let type='bus',color='#2dd4bf';
+  if(cat.includes('tåg')||[1,2,4].includes(+p.catCode)){type='train';color='#4ade80';}
+  else if(cat.includes('spårv')||+p.catCode===8){type='tram';color='#22d3ee';}
+  const far=cat.includes('express')||cat.includes('fjärr')||(type==='bus'&&num.length>=4);
+  return{emoji:'',color,displayName:far&&op?op.replace(/^Vy\s+/i,''):num};
 }
 
 // ── Stops ──────────────────────────────────────────────────────────
@@ -680,7 +680,9 @@ let lightOn = false;
 document.getElementById('btn-theme').onclick = function() {
   lightOn = !lightOn;
   document.body.classList.toggle('light', lightOn);
-  this.textContent = lightOn ? '🌙' : '☀︎';
+  document.getElementById('theme-icon').innerHTML = lightOn
+    ? '<path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" fill="none" stroke="currentColor" stroke-width="2.5"/>'
+    : '<circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" fill="none" stroke="currentColor" stroke-width="2.5"/>';
   this.title = lightOn ? 'Byt till mörkt tema' : 'Byt till ljust tema';
   map.eachLayer(l => { if (l instanceof L.TileLayer) map.removeLayer(l); });
   L.tileLayer(lightOn

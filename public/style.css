@@ -246,7 +246,7 @@ body {
 }
 #card::-webkit-scrollbar { display: none; }
 .card-bar { display: none; }
-.card-x { float: right; width: 22px; height: 22px; border-radius: 50%; border: none; background: var(--card2); color: var(--sub); font-size: 0.7rem; cursor: pointer; }
+.card-x { float: right; width: 22px; height: 22px; border-radius: 50%; border: none; background: var(--card2); color: var(--sub); font-size: 0.7rem; cursor: pointer; position: relative; z-index: 10; margin-bottom: 8px; }
 
 /* ── Departures ──────────────────────────── */
 .dep-h { font-size: 0.82rem; font-weight: 800; margin-bottom: 2px; }

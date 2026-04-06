@@ -1,4 +1,4 @@
-const CACHE = 'kollektivtrafik-v4';
+const CACHE = 'kollektivtrafik-v5';
 const STATIC = ['/', '/style.css', '/app.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

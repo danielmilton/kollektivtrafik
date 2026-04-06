@@ -423,8 +423,8 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
   }
 
   .nav-btn.active { color: var(--teal); }
-  .nav-btn svg { opacity: 0.7; }
-  .nav-btn.active svg { opacity: 1; stroke: var(--teal); }
+  .nav-btn svg { opacity: 1; stroke: var(--sub); width: 22px; height: 22px; }
+  .nav-btn.active svg { stroke: var(--teal); }
 
   /* Panels & overlays */
   #trip-bar { top: 40px; left: 8px; right: 8px; bottom: 64px; max-height: none; border-radius: var(--r); }

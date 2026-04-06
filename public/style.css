@@ -301,10 +301,51 @@ body {
 
 /* ── Alerts ──────────────────────────────── */
 .al-h { font-size: 0.88rem; font-weight: 800; margin-bottom: 10px; }
-.al { padding: 10px; border-radius: 8px; background: var(--card2); border-left: 3px solid var(--orange); margin-bottom: 5px; }
+.al-count { font-size: 0.65rem; font-weight: 600; color: var(--dim); }
+
+.al {
+  border-radius: 8px; background: var(--card2);
+  border-left: 3px solid var(--orange);
+  margin-bottom: 5px;
+}
 .al.sev { border-left-color: var(--red); }
-.al-t { font-size: 0.7rem; font-weight: 700; margin-bottom: 2px; }
-.al-d { font-size: 0.6rem; color: var(--sub); line-height: 1.4; }
+
+.al-t {
+  font-size: 0.72rem; font-weight: 700;
+  padding: 10px;
+  cursor: pointer;
+  list-style: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+
+.al-t::after {
+  content: '';
+  width: 5px; height: 5px;
+  border-right: 1.5px solid var(--sub);
+  border-bottom: 1.5px solid var(--sub);
+  transform: rotate(-45deg);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.al[open] .al-t::after { transform: rotate(45deg); }
+.al-t::-webkit-details-marker { display: none; }
+
+.al-d {
+  font-size: 0.68rem; color: var(--sub); line-height: 1.6;
+  padding: 0 10px 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+/* ── About ───────────────────────────────── */
+.about-title { font-size: 0.92rem; font-weight: 800; margin-bottom: 12px; }
+.about-text { font-size: 0.72rem; color: var(--sub); line-height: 1.6; margin-bottom: 8px; }
+.about-section { margin-bottom: 12px; }
+.about-label { font-size: 0.58rem; font-weight: 700; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.about-link { display: inline-block; font-size: 0.7rem; font-weight: 600; color: var(--teal); text-decoration: none; }
+.about-dev { display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 700; color: var(--teal); text-decoration: none; padding: 6px 0; }
+.about-footer { font-size: 0.58rem; color: var(--dim); margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--border); }
 
 /* Stats */
 .stats-h { font-size: 0.88rem; font-weight: 800; margin-bottom: 12px; }

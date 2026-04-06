@@ -514,8 +514,14 @@ async function updateAlerts() {
 
 function showAlerts() {
   if (!alerts.length) { openCard('<div class="al-h">Störningar</div><p class="empty">Inga aktiva störningar</p>'); return; }
-  openCard('<div class="al-h">Störningar (' + alerts.length + ')</div>' +
-    alerts.map(a => `<div class="al ${a.effect>=3?'sev':''}"><div class="al-t">${esc(a.header)}</div><div class="al-d">${esc(a.description).substring(0,140)}${a.description.length>140?'...':''}</div></div>`).join(''));
+  openCard('<div class="al-h">Störningar <span class="al-count">' + alerts.length + '</span></div>' +
+    alerts.map(a => {
+      const short = a.description.length > 100;
+      return `<details class="al ${a.effect>=3?'sev':''}">
+        <summary class="al-t">${esc(a.header)}</summary>
+        <div class="al-d">${esc(a.description)}</div>
+      </details>`;
+    }).join(''));
 }
 
 // ── Departures ─────────────────────────────────────────────────────
@@ -673,7 +679,12 @@ document.getElementById('btn-search').onclick = () => {
 };
 
 document.getElementById('btn-locate').onclick = () => {
-  navigator.geolocation?.getCurrentPosition(p => map.flyTo([p.coords.latitude,p.coords.longitude],15), ()=>{}, {enableHighAccuracy:true});
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(
+    p => map.flyTo([p.coords.latitude, p.coords.longitude], 15),
+    err => { if (err.code === 1) alert('Tillåt platstjänster i inställningarna'); },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
 };
 
 let lightOn = false;
@@ -766,7 +777,13 @@ document.getElementById('nav-filter')?.addEventListener('click', function() {
 
 document.getElementById('nav-locate')?.addEventListener('click', function() {
   closeMobPanels();
-  navigator.geolocation?.getCurrentPosition(p => map.flyTo([p.coords.latitude,p.coords.longitude],15), ()=>{}, {enableHighAccuracy:true});
+  if (!navigator.geolocation) { alert('Platstjänster stöds inte i denna webbläsare'); return; }
+  this.classList.add('active');
+  navigator.geolocation.getCurrentPosition(
+    p => { map.flyTo([p.coords.latitude, p.coords.longitude], 15); this.classList.remove('active'); },
+    err => { alert(err.code === 1 ? 'Tillåt platstjänster i inställningarna' : 'Kunde inte hämta position'); this.classList.remove('active'); },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
 });
 
 document.getElementById('nav-more')?.addEventListener('click', function() {
@@ -834,13 +851,34 @@ document.getElementById('mm-alerts')?.addEventListener('click', () => {
   showAlerts();
 });
 
+function showAbout() {
+  openCard(`
+    <div class="about">
+      <div class="about-title">Om Kollektivtrafik</div>
+      <p class="about-text">En realtidskarta som visar alla bussar, tåg och spårvagnar i Östergötland och Örebro län. Fordonspositioner uppdateras var 5:e sekund med smooth interpolation för en flytande upplevelse.</p>
+      <div class="about-section">
+        <div class="about-label">Funktioner</div>
+        <p class="about-text">Följ enskilda fordon i realtid, sök resor mellan hållplatser, se avgångar och trafikstörningar. Installera som app på din telefon för snabb åtkomst.</p>
+      </div>
+      <div class="about-section">
+        <div class="about-label">Data</div>
+        <p class="about-text">All trafikdata hämtas i realtid via Trafiklabs öppna API:er (GTFS Regional + ResRobot). Licensierad under CC BY 4.0.</p>
+        <a href="https://trafiklab.se" target="_blank" rel="noopener" class="about-link">trafiklab.se</a>
+      </div>
+      <div class="about-section">
+        <div class="about-label">Utvecklad av</div>
+        <a href="https://papai.se" target="_blank" rel="noopener" class="about-dev">
+          <span>Papai.se</span>
+        </a>
+      </div>
+      <div class="about-footer">Version 1.0 — Byggd med Node.js och Leaflet.js</div>
+    </div>
+  `);
+}
+
 document.getElementById('mm-info')?.addEventListener('click', () => {
   closeMobPanels();
-  openCard(`
-    <div style="font-size:0.9rem;font-weight:800;margin-bottom:10px">Om Kollektivtrafik</div>
-    <p style="font-size:0.75rem;color:var(--sub);line-height:1.6;margin-bottom:8px">Realtidskarta för kollektivtrafiken i Östergötland och Örebro.</p>
-    <p style="font-size:0.68rem;color:var(--dim)">Data: CC BY 4.0 Trafiklab</p>
-  `);
+  showAbout();
 });
 
 // ── Init ───────────────────────────────────────────────────────────

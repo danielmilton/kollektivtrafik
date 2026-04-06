@@ -399,8 +399,8 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
     position: fixed;
     bottom: 0; left: 0; right: 0;
     z-index: 800;
-    height: 56px;
-    padding: 4px 0 calc(4px + env(safe-area-inset-bottom, 0px));
+    height: 68px;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
     background: rgba(13,33,55,0.95);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-top: 1px solid var(--border);
@@ -427,13 +427,13 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
   .nav-btn.active .nav-icon { opacity: 1; filter: brightness(1.5) saturate(1.5); }
 
   /* Panels & overlays */
-  #trip-bar { top: 40px; left: 8px; right: 8px; bottom: 64px; max-height: none; border-radius: var(--r); }
+  #trip-bar { top: 40px; left: 8px; right: 8px; bottom: 76px; max-height: none; border-radius: var(--r); }
   #search-bar { top: 40px; left: 8px; right: 8px; width: auto; }
   #search { font-size: 0.88rem; padding: 12px 14px; }
   #search-list { max-height: 50dvh; }
   #follow { top: 40px; }
 
-  #card { left: 8px; right: 8px; width: auto; bottom: 64px; max-height: 50dvh; }
+  #card { left: 8px; right: 8px; width: auto; bottom: 76px; max-height: 50dvh; }
 
   /* Sidopanel overlay */
   #stops-panel {
@@ -444,7 +444,7 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     z-index: 850;
     display: flex; align-items: flex-end;
-    padding: 0 0 56px; /* space for navbar */
+    padding: 0 0 68px; /* space for navbar */
   }
 
   #stops-panel:has(#sp-empty:not(.hidden)) { display: none; }

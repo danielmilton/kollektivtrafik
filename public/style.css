@@ -488,7 +488,7 @@ body.light .vdot { box-shadow: 0 0 4px rgba(0,0,0,0.15); border-color: rgba(0,0,
   #mob-filter:not(.hidden), #mob-more:not(.hidden) { display: block; }
 
   #mob-filter-inner, #mob-more-inner {
-    background: transparent;
+    background: var(--card);
     border-radius: 0;
     border-top: none;
     padding: 16px;
